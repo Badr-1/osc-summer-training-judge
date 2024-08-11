@@ -52,12 +52,20 @@ get_repo() {
 create_sandbox() {
     mkdir sandbox
     cd sandbox
-    ../solution.sh &>/dev/null
-    ../validate.sh &>/dev/null
-    if [[ $? -ne 0 ]]; then
+    if [[ ! -e "../solution.sh" ]]; then
+        print_message error "No Solution Was Found"
         echo "$github_link,Failed" >>$path/output.csv
     else
-        echo "$github_link,Passed" >>$path/output.csv
+        ../solution.sh &>/dev/null
+        # to negate the need for check if the user has changed the validate script
+        # we use the script we wrote
+        # but should we apply punishment on students who changes the validate script ?
+        $path/$task_name/validate.sh &>/dev/null
+        if [[ $? -ne 0 ]]; then
+            echo "$github_link,Failed" >>$path/output.csv
+        else
+            echo "$github_link,Passed" >>$path/output.csv
+        fi
     fi
 }
 
