@@ -57,8 +57,6 @@ get_repo() {
 create_task() {
     cp -r $path/$task_name .
     cd $task_name
-    touch solution.sh
-    chmod +x solution.sh
 }
 
 submit_task() {
