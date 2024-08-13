@@ -42,6 +42,10 @@ print_message() {
         esac
 }
 
+mkdir sandbox
+cd sandbox
+../solution.sh
+
 if [[ ! -e name ]]; then
         print_message "failed (0/6)\r" error
         exit 1
@@ -93,3 +97,6 @@ else
         print_message "passed (6/6)\r" success
         sleep 0.1
 fi
+
+cd ..
+rm -rf sandbox
