@@ -14,8 +14,7 @@ The Initial Example here would be [Task-1](Task-1)
 Each Task should only contains:
 - [x] README.md: for description
 - [x] validate.sh: for testing solution
-
-the script generate a third file called [solution.sh](solution.sh) for students to submit there solution to.
+- [x] solution.sh or any suitable files for students to deliver their task.
 
 ### Important Note
 Created Tasks should be Testable, Some Tasks made on '23 Summer Training wasn't made to be tested via a script.
