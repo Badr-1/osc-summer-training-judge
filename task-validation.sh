@@ -47,10 +47,15 @@ print_message() {
 get_repo() {
     github_link=$(echo "$entry" | cut -d "," -f2)
     reponame="$(echo $github_link | sed 's/\.git$//' | awk -F '/' '{print $NF}')"
-    path=$(pwd)
-    print_message "cloned $github_link"
     git clone $github_link &>/dev/null
-    cd $reponame
+    if [[ $? -ne 0 ]]; then # pull instead of clone
+        print_message "pulled $github_link"
+        cd $reponame
+        git pull &>/dev/null
+    else
+        print_message "cloned $github_link"
+        cd $reponame
+    fi
 }
 
 create_sandbox() {
@@ -76,16 +81,18 @@ validating_task() {
     get_repo
     cd $task_name
     create_sandbox
-    clean_up
+    cd $path/repos
 }
-
+path=$(pwd)
 # reading repos csv must be headless
 source="repos.csv"
 repositories=$(wc -l <"$source")
 print_message "Number of Repositories: $repositories"
 print_line
+mkdir repos &>/dev/null
+cd repos
 for student in $(seq 1 $repositories); do
-    entry=$(sed -n "$student"p $source)
+    entry=$(sed -n "$student"p $path/$source)
     task_name=$1
     validating_task
     print_line

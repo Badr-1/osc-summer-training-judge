@@ -49,9 +49,13 @@ print_message() {
 get_repo() {
     github_link=$(echo "$entry" | cut -d "," -f2)
     reponame="$(echo $github_link | sed 's/\.git$//' | awk -F '/' '{print $NF}')"
-    path=$(pwd)
     git clone $github_link &>/dev/null
-    cd $reponame
+    if [[ $? -ne 0 ]]; then # pull instead of clone
+        cd $reponame
+        git pull &>/dev/null
+    else
+        cd $reponame
+    fi
 }
 
 create_task() {
@@ -71,18 +75,19 @@ clean_up() {
 }
 
 push_task() {
-
     get_repo
     create_task
     submit_task
-    clean_up
+    cd $path/repos
 }
-
 source="repos.csv"
 repositories=$(wc -l <"$source")
+path=$(pwd)
 print_message "Number of Repositories: $repositories"
+mkdir repos &>/dev/null
+cd repos
 for student in $(seq 1 $repositories); do
-    entry=$(sed -n "$student"p $source)
+    entry=$(sed -n "$student"p $path/$source)
     task_name=$1
     push_task
     print_message "($student/$repositories) Tasks Pushed" overlay
